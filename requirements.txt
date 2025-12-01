@@ -1,0 +1,7 @@
+# Data Collection Requirements for FetchAPI Project
+
+# HTTP requests
+requests>=2.31.0
+
+# Data processing (optional, for future enhancements)
+pandas>=2.0.0
