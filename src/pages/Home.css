@@ -1,0 +1,55 @@
+/* src/pages/Home.css */
+
+.home-page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  font-family: system-ui, sans-serif;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0;
+}
+
+/* Search bar placeholder */
+.search-placeholder {
+  border: 1px dashed #999;
+  padding: 1.3rem;
+  border-radius: 8px;
+  background: #fafafa;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+/* Paragraphs */
+.text {
+  line-height: 1.55;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+/* Emphasized text */
+em {
+  color: #333;
+  font-style: italic;
+}

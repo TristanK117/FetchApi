@@ -15,9 +15,6 @@ export default function App() {
         <Route path="/about" element={<About />} />
       </Routes>
 
-      <footer className="app-footer">
-        <small>&copy; {new Date().getFullYear()} FetchAPI</small>
-      </footer>
     </div>
   );
 }

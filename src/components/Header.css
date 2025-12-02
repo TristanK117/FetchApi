@@ -1,0 +1,26 @@
+.header {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  font-weight: bold;
+}
+
+.header-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.header-link {
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.header-link:hover {
+  text-decoration: underline;
+}
