@@ -1,0 +1,138 @@
+.search-page {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  background: #f4f1e8;
+  padding: 1.5rem;
+  border-radius: 16px;
+  height: fit-content;
+}
+
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ---- Search Header ---- */
+.search-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.search-button {
+  background: #4a8aff;
+  color: white;
+  padding: 0.9rem 1.6rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* ---- Tabs ---- */
+.sort-tabs {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #000;
+  font-weight: 600;
+}
+
+/* ---- Results ---- */
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.result-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.result-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.api-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.similarity {
+  color: #3a6ff7;
+  font-weight: 600;
+}
+
+.similarity-bar {
+  background: #e0e0e0;
+  height: 8px;
+  border-radius: 6px;
+  margin: 0.4rem 0 1rem;
+}
+
+.bar-fill {
+  background: #3a6ff7;
+  height: 8px;
+  border-radius: 6px;
+}
+
+.api-description {
+  color: #444;
+  margin-bottom: 0.4rem;
+}
+
+.api-category {
+  color: #888;
+  font-size: 0.9rem;
+}

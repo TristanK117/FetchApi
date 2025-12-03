@@ -24,7 +24,7 @@ export default function SearchForm({ onSearch }) {
       <input
         type="text"
         className="search-input"
-        placeholder="Search for an API (e.g. weather with pollution data)"
+        placeholder="e.g. weather and pollution data by city"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />

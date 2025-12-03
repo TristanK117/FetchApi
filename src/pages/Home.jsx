@@ -1,24 +1,31 @@
-import React from "react";
-import "./Home.css";
+import { useNavigate } from "react-router-dom";
 import SearchForm from "../components/SearchForm.jsx";
+import "./Home.css";
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  function handleSearch(query) {
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+  }
+
   return (
     <div className="home-page">
-
+      
       {/* Header Section */}
       <section className="section">
         <h1 className="title">FetchAPI</h1>
-        <p className="subtitle">
-          Centralized search tool for APIs 
-        </p>
+        <p className="subtitle">Centralized search tool for APIs</p>
       </section>
 
+      {/* Search Section */}
       <section className="section">
-        <SearchForm />
+        <div className="home-search-container">
+          <SearchForm onSearch={handleSearch} />
+        </div>
       </section>
 
-      {/* Project Sections */}
+      {/* Project Description Sections */}
       <section className="section">
         <h2 className="section-title">Motivation & Problem</h2>
         <p className="text">
