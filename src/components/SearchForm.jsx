@@ -1,8 +1,6 @@
-// src/components/SearchForm.jsx
 import React, { useState } from "react";
 import "./SearchForm.css";
 
-// Simple search bar component
 // No backend yet, just logs queries.
 
 export default function SearchForm({ onSearch }) {

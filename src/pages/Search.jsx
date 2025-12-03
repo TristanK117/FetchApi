@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import "./Search.css";
 
 export default function Search() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
 
@@ -39,7 +40,7 @@ export default function Search() {
   return (
     <div className="search-page">
 
-      {/* ---------------- LEFT SIDEBAR ---------------- */}
+      {/*Left Sidebar*/}
       <aside className="sidebar">
         <h3 className="sidebar-title">Filters</h3>
 
@@ -74,10 +75,10 @@ export default function Search() {
         </div>
       </aside>
 
-      {/* ---------------- MAIN CONTENT ---------------- */}
+      {/*Main Content*/}
       <main className="search-results">
 
-        {/* ---- Search bar ---- */}
+        {/*Search bar*/}
         <div className="search-header">
           <input
             className="search-input"
@@ -89,14 +90,14 @@ export default function Search() {
           </button>
         </div>
 
-        {/* ---- Tabs ---- */}
+        {/*Tabs*/}
         <div className="sort-tabs">
           <span className="tab active">Category</span>
           <span className="tab">Popularity</span>
           <span className="tab">Ease of Use</span>
         </div>
 
-        {/* ---- Result list ---- */}
+        {/*Result list*/}
         {loading && <p>Searching...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -109,10 +110,17 @@ export default function Search() {
             const similarity = Math.min(api.score * 10, 99);
 
             return (
-              <div className="result-card" key={api.id || index}>
+              <div
+                className="result-card"
+                key={api.id || index}
+                onClick={() => navigate(`/api/${api.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="result-top">
                   <h3 className="api-name">{api.name}</h3>
-                  <span className="similarity">Similarity {similarity.toFixed(0)}%</span>
+                  <span className="similarity">
+                    Similarity {similarity.toFixed(0)}%
+                  </span>
                 </div>
 
                 <div className="similarity-bar">
@@ -125,9 +133,7 @@ export default function Search() {
             );
           })}
         </div>
-
       </main>
-
     </div>
   );
 }

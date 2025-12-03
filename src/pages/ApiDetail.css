@@ -1,0 +1,68 @@
+.detail-page {
+  padding: 2rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: #3a6ff7;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/*left Card*/
+.detail-left {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.api-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.api-category {
+  color: #777;
+  margin-bottom: 1.2rem;
+}
+
+.api-description {
+  margin-bottom: 1.2rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.meta-box p {
+  margin: 0.4rem 0;
+  color: #555;
+}
+
+/*Right Card*/
+.detail-right {
+  background: #f6f6f9;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+}
+
+.code-block {
+  background: #1a1a1a;
+  color: #00ffae;
+  padding: 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}

@@ -7,7 +7,7 @@
   min-height: 100vh;
 }
 
-/* ---- Sidebar ---- */
+/* Sidebar */
 .sidebar {
   background: #f4f1e8;
   padding: 1.5rem;
@@ -39,7 +39,7 @@
   border: 1px solid #ccc;
 }
 
-/* ---- Search Header ---- */
+/* Search Header */
 .search-header {
   display: flex;
   gap: 1rem;
@@ -64,7 +64,7 @@
   cursor: pointer;
 }
 
-/* ---- Tabs ---- */
+/*Tabs */
 .sort-tabs {
   display: flex;
   gap: 1.5rem;
@@ -82,7 +82,7 @@
   font-weight: 600;
 }
 
-/* ---- Results ---- */
+/*Results*/
 .result-list {
   display: flex;
   flex-direction: column;
