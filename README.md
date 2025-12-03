@@ -2,6 +2,28 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Setup & Usage
+
+In the root directory:
+
+### For Mac:
+#### Create & Activate venv
+```
+python -m venv venv
+source venv/bin/activate
+```
+
+#### Install Requirements
+```
+pip install -r requirements.txt
+```
+
+#### Download Dataset
+```
+python scripts/scrape_all.py
+python scripts/clean_data.py
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
