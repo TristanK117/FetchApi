@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ApiDetail.css";
 
 export default function ApiDetail() {
-    const { id, query } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
 
     const [apiData, setApiData] = useState(null);
@@ -12,22 +12,6 @@ export default function ApiDetail() {
 
     useEffect(() => {
     // Load main API + recommended APIs
-    fetch(`http://127.0.0.1:5000/api/hybrid?query=${encodeURIComponent(query)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("search results:", data);
-        if (data && data.results) {
-            const mainAPI = data.results.find((item) => String(item.id) === id);
-            console.log("found api:", mainAPI)
-            setApiData(mainAPI || null);
-        }
-      })
-      .catch(() => {
-        setApiData(null);
-      });
 
     fetch(`http://127.0.0.1:5000/api/recommend/${id}`)
       .then((res) => {
@@ -35,11 +19,13 @@ export default function ApiDetail() {
         return res.json();
       })
       .then((data) => {
+        setApiData(data.main_api)
         if (data && data.recommendations) {
           setRecommended(data.recommendations);
         }
       })
       .catch(() => {
+        setApiData(null);
         setRecommended([]);
       })
       .finally(() => {
@@ -79,6 +65,7 @@ export default function ApiDetail() {
                         <li><strong>API ID:</strong> {apiData.id}</li>
                         <li><strong>Category:</strong> {apiData.category}</li>
                         <li><strong>Auth:</strong> {apiData.auth || "Unknown"}</li>
+                        <li><strong>Link:</strong> <a href={apiData.link} target="_blank">{apiData.link}</a></li>
                         </ul>
                     </div>
                 </div>

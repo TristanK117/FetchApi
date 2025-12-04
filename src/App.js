@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/about" element={<About />} />
-        <Route path="/api/:id/:query" element={<ApiDetail />} />
+        <Route path="/api/:id" element={<ApiDetail />} />
       </Routes>
 
     </div>
