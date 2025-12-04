@@ -3,6 +3,9 @@ from flask_cors import CORS
 import pandas as pd
 import re
 from rank_bm25 import BM25Okapi
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -42,6 +45,38 @@ corpus = df["weighted_text"].tolist()
 tokenized = [doc.split() for doc in corpus]
 bm25 = BM25Okapi(tokenized)
 
+# Load semantic embedding model
+embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# Precompute embeddings for each API weighted_text
+embeddings = embed_model.encode(df["weighted_text"].tolist(), normalize_embeddings=True)
+embeddings = np.array(embeddings)
+
+def hybrid_scores(query):
+    # BM25 score
+    clean_query = preprocess(query)
+    bm25_tokens = clean_query.split()
+    bm25_scores = bm25.get_scores(bm25_tokens)
+
+    # Semantic score
+    query_vec = embed_model.encode([clean_query], normalize_embeddings=True)
+    semantic_scores = cosine_similarity(query_vec, embeddings)[0]
+
+    # Normalize BM25 to 0 to 1
+    if bm25_scores.max() > 0:
+        bm25_norm = bm25_scores / bm25_scores.max()
+    else:
+        bm25_norm = bm25_scores
+
+    # Normalize semantic scores
+    semantic_norm = semantic_scores
+
+    # Weighted combination
+    final = (0.5 * bm25_norm) + (0.5 * semantic_norm)
+
+    return final
+
+
 @app.route("/api/bm25", methods=["GET"])
 def bm25_search():
     query = request.args.get("query")
@@ -66,6 +101,30 @@ def bm25_search():
 
     # print("TOP INDEXES:", top_idx)
     # print("RESULTS:", results)
+    return jsonify({
+        "query": query,
+        "results": results
+    })
+
+@app.route("/api/hybrid", methods=["GET"])
+def hybrid_search():
+    query = request.args.get("query")
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+
+    final_scores = hybrid_scores(query)
+
+    top_n = 10
+    top_idx = final_scores.argsort()[::-1][:top_n]
+
+    results = []
+    for idx in top_idx:
+        if final_scores[idx] <= 0:
+            continue
+        rec = df.iloc[idx].to_dict()
+        rec["hybrid_score"] = float(final_scores[idx])
+        results.append(rec)
+
     return jsonify({
         "query": query,
         "results": results
