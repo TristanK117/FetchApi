@@ -9,7 +9,7 @@ In the root directory:
 ### For Mac:
 #### Create & Activate venv
 ```
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 ```
 
@@ -20,8 +20,8 @@ pip install -r requirements.txt
 
 #### Download Dataset
 ```
-python scripts/scrape_all.py
-python scripts/clean_data.py
+python3 scripts/scrape_all.py
+python3 scripts/clean_data.py
 ```
 
 ## Available Scripts
