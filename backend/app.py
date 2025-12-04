@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 #load the data
 df = pd.read_csv("../data/cleaned/apis_cleaned.csv")
@@ -16,7 +16,10 @@ df = pd.read_csv("../data/cleaned/apis_cleaned.csv")
 def preprocess(text):
     if not isinstance(text, str):
         return ""
-    text = text.lower().strip()
+    text = text.lower()
+    text = text.replace("\u2028", " ").replace("\u2029", " ")
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 NAME_WEIGHT = 4
@@ -28,7 +31,11 @@ def build_weighted_text(row):
     cat = preprocess(row["category"])
 
     # Weighted text string
-    weighted = f"name: {name} category: {cat} description: {desc}"
+    weighted = (
+        (name + " ") * NAME_WEIGHT +
+        (cat + " ") * CATEGORY_WEIGHT +
+        desc
+    )
 
     return weighted.strip()
 
@@ -46,34 +53,26 @@ embeddings = embed_model.encode(df["weighted_text"].tolist(), normalize_embeddin
 embeddings = np.array(embeddings)
 
 def hybrid_scores(query):
+    # BM25 score
     clean_query = preprocess(query)
-
-    # --- BM25 scoring ---
     bm25_tokens = clean_query.split()
     bm25_scores = bm25.get_scores(bm25_tokens)
 
-    # --- Semantic scoring ---
+    # Semantic score
     query_vec = embed_model.encode([clean_query], normalize_embeddings=True)
     semantic_scores = cosine_similarity(query_vec, embeddings)[0]
 
-    # --- Min-max normalize BM25 ---
-    bm25_min = bm25_scores.min()
-    bm25_max = bm25_scores.max()
-    if bm25_max - bm25_min > 0:
-        bm25_norm = (bm25_scores - bm25_min) / (bm25_max - bm25_min)
+    # Normalize BM25 to 0 to 1
+    if bm25_scores.max() > 0:
+        bm25_norm = bm25_scores / bm25_scores.max()
     else:
-        bm25_norm = np.zeros_like(bm25_scores)
+        bm25_norm = bm25_scores
 
-    # --- Min-max normalize semantic scores ---
-    sem_min = semantic_scores.min()
-    sem_max = semantic_scores.max()
-    if sem_max - sem_min > 0:
-        semantic_norm = (semantic_scores - sem_min) / (sem_max - sem_min)
-    else:
-        semantic_norm = np.zeros_like(semantic_scores)
+    # Normalize semantic scores
+    semantic_norm = semantic_scores
 
-    # --- Stable hybrid scoring ---
-    final = (0.3 * bm25_norm) + (0.7 * semantic_norm)
+    # Weighted combination
+    final = (0.5 * bm25_norm) + (0.5 * semantic_norm)
 
     return final
 
@@ -123,7 +122,7 @@ def hybrid_search():
         if final_scores[idx] <= 0:
             continue
         rec = df.iloc[idx].to_dict()
-        rec["hybrid_score"] = float(final_scores[idx])
+        rec["hybrid_score"] = float(final_scores[idx] * 100)
         results.append(rec)
 
     return jsonify({
