@@ -112,7 +112,7 @@ export default function Search() {
               <div
                 className="result-card"
                 key={api.id || index}
-                onClick={() => navigate(`/api/${api.id}/${query}`)}
+                onClick={() => navigate(`/api/${api.id}`)}
                 style={{ 
                   cursor: "pointer",
                 }}

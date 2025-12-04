@@ -136,6 +136,8 @@ def recommend(api_id):
         item = df[df["id"] == api_id]
         if item.empty:
             return jsonify({"error": "API ID not found"}), 404
+        
+        main_api = item.iloc[0].to_dict()
 
         query_text = item.iloc[0]["weighted_text"]
         q_tokens = query_text.split()
@@ -156,7 +158,7 @@ def recommend(api_id):
             rec["score"] = float(scores[idx])
             results.append(rec)
 
-        return jsonify({"id": api_id, "recommendations": results})
+        return jsonify({"id": api_id, "main_api": main_api, "recommendations": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
