@@ -1,21 +1,14 @@
 import React, { useState } from "react";
 import "./SearchForm.css";
 
-// No backend yet, just logs queries.
-
 export default function SearchForm({ onSearch }) {
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
     if (!query.trim()) return;
-
-    console.log("Searching for:", query);
-
-    if (onSearch) {
-      onSearch(query);
-    }
-  };
+    onSearch(query);
+  }
 
   return (
     <form className="search-form" onSubmit={handleSubmit}>

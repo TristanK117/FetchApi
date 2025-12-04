@@ -3,36 +3,46 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ApiDetail.css";
 
 export default function ApiDetail() {
-    const [recommended, setRecommended] = useState([]);
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [apiData, setApiData] = useState(null);
+    const [recommended, setRecommended] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch main API info + recommended APIs
     useEffect(() => {
-        async function loadData() {
-            try {
-            const bm25Res = await fetch(
-                `http://127.0.0.1:5000/api/bm25?query=${encodeURIComponent(id)}`
-            );
-            const bm25Data = await bm25Res.json();
-            const mainAPI = bm25Data.results?.find((item) => String(item.id) === id);
-            setApiData(mainAPI || null);
-
-            const recRes = await fetch(`http://127.0.0.1:5000/api/recommend/${id}`);
-            const recData = await recRes.json();
-            setRecommended(recData.recommendations || []);
-
-            } catch (err) {
-            console.error(err);
-            } finally {
-            setLoading(false);
-            }
+    // Load main API + recommended APIs
+    fetch(`http://127.0.0.1:5000/api/hybrid?query=${encodeURIComponent(id)}`)
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.results) {
+          const mainAPI = data.results.find((item) => String(item.id) === id);
+          setApiData(mainAPI || null);
         }
+      })
+      .catch(() => {
+        setApiData(null);
+      });
 
-        loadData();
+    fetch(`http://127.0.0.1:5000/api/recommend/${id}`)
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.recommendations) {
+          setRecommended(data.recommendations);
+        }
+      })
+      .catch(() => {
+        setRecommended([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     }, [id]);
 
     if (loading) return <p className="loading">Loading API details…</p>;
@@ -45,42 +55,53 @@ export default function ApiDetail() {
                 ← Back
             </button>
 
+            <div className="detail-header">
+                <h1 className="api-title">{apiData.name}</h1>
+
+                <div className="tag-row">
+                <span className="tag category-tag">{apiData.category}</span>
+                <span className="tag auth-tag">{apiData.auth || "No Auth"}</span>
+                </div>
+            </div>
+
             {/*Detail Layout Section */}
             <div className="detail-layout">
 
                 {/* Left Column api information*/}
                 <div className="detail-left">
-                <h1 className="api-title">{apiData.name}</h1>
-                <p className="api-category">{apiData.category}</p>
+                    <p className="api-description">{apiData.description}</p>
 
-                <p className="api-description">{apiData.description}</p>
-
-                <div className="meta-box">
-                    <p><strong>Auth:</strong> {apiData.auth || "Unknown"}</p>
-                    <p><strong>Category:</strong> {apiData.category}</p>
-                    <p><strong>API ID:</strong> {apiData.id}</p>
-                </div>
+                    <div className="meta-section">
+                        <h3>API Details</h3>
+                        <ul className="meta-list">
+                        <li><strong>API ID:</strong> {apiData.id}</li>
+                        <li><strong>Category:</strong> {apiData.category}</li>
+                        <li><strong>Auth:</strong> {apiData.auth || "Unknown"}</li>
+                        </ul>
+                    </div>
                 </div>
 
                 {/*Right Column code snippet */}
                 <div className="detail-right">
-                <h2>Example Request</h2>
+                    <div className="code-header">
+                        <button className="code-tab active">JavaScript</button>
+                        <button className="code-tab">Python</button>
+                        <button className="copy-btn">Copy</button>
+                    </div>
 
-                <pre className="code-block">
-                        {`fetch("https://api.example.com/${apiData.id}", {
-                                method: "GET",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                }
-                            })
-                            .then(res => res.json())
-                            .then(data => console.log(data));`
-                        }
-                </pre>
-                </div>
+                    <pre className="code-box">
+                {`fetch("https://api.example.com/${apiData.id}", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+                })
+                .then(res => res.json())
+                .then(data => console.log(data));`}
+                    </pre>
+                    </div>
 
-            </div>
-            
+        </div>
             
             {/* Recommended APIs Section */}
             <div className="recommended-section">
@@ -92,15 +113,15 @@ export default function ApiDetail() {
 
                 <div className="recommended-list">
                     {recommended.map((api, i) => (
-                    <div
-                        key={api.id || i}
-                        className="recommended-card"
-                        onClick={() => navigate(`/api/${api.id}`)}
-                    >
-                        <h3>{api.name}</h3>
-                        <p>{api.description?.slice(0, 120)}...</p>
-                        <span className="rec-category">{api.category}</span>
-                    </div>
+                        <div
+                            key={api.id || i}
+                            className="recommended-card"
+                            onClick={() => navigate(`/api/${api.id}`)}
+                        >
+                            <h3>{api.name}</h3>
+                            <p>{api.description?.slice(0, 120)}...</p>
+                            <span className="rec-category">{api.category}</span>
+                        </div>
                     ))}
                 </div>
             </div>

@@ -54,12 +54,12 @@ export default function Home() {
 
       <section className="section">
         <h2 className="section-title">How FetchAPI Works</h2>
-        <p className="text">
-          • Index API descriptions and documentation  
-          • Use BM25 + semantic similarity to compute relevance  
-          • Rank APIs by intent, functionality, and ease of use  
-          • Display summaries, metadata, and links  
-        </p>
+        <ul className="text">
+          <li>Index API descriptions and documentation</li> 
+          <li>Use BM25 + semantic similarity to compute relevance</li>
+          <li>Rank APIs by intent, functionality, and ease of use</li>
+          <li>Display summaries, metadata, and links</li>
+        </ul>
       </section>
 
       <section className="section">

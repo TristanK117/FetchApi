@@ -12,25 +12,31 @@ export default function Search() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function fetchResults(q) {
-    try {
-      setLoading(true);
-      setError("");
+  function fetchResults(q) {
+    setLoading(true);
+    setError("");
 
-      const res = await fetch(
-        `http://127.0.0.1:5000/api/bm25?query=${encodeURIComponent(q)}`
-      );
-
-      if (!res.ok) throw new Error("Server error");
-
-      const data = await res.json();
-      setResults(data.results || []);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong while fetching results.");
-    } finally {
-      setLoading(false);
-    }
+    fetch(`http://127.0.0.1:5000/api/hybrid?query=${encodeURIComponent(q)}`)
+      .then((res) => {
+        if (!res.ok) {
+          setError("Something went wrong while fetching results.");
+          return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.results) {
+          setResults(data.results);
+        } else {
+          setResults([]);
+        }
+      })
+      .catch(() => {
+        setError("Something went wrong while fetching results.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -90,13 +96,6 @@ export default function Search() {
           </button>
         </div>
 
-        {/*Tabs*/}
-        <div className="sort-tabs">
-          <span className="tab active">Category</span>
-          <span className="tab">Popularity</span>
-          <span className="tab">Ease of Use</span>
-        </div>
-
         {/*Result list*/}
         {loading && <p>Searching...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
@@ -107,14 +106,17 @@ export default function Search() {
 
         <div className="result-list">
           {results.map((api, index) => {
-            const similarity = Math.min(api.score * 10, 99);
+            const similarity = Math.min(api.hybrid_score * 10, 99);
 
             return (
               <div
                 className="result-card"
                 key={api.id || index}
                 onClick={() => navigate(`/api/${api.id}`)}
-                style={{ cursor: "pointer" }}
+                style={{ 
+                  cursor: "pointer",
+                }}
+                
               >
                 <div className="result-top">
                   <h3 className="api-name">{api.name}</h3>
