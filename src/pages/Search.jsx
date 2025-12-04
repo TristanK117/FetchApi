@@ -106,7 +106,7 @@ export default function Search() {
 
         <div className="result-list">
           {results.map((api, index) => {
-            const similarity = Math.min(api.hybrid_score * 10, 99);
+            const similarity = api.hybrid_score ?? 0;
 
             return (
               <div
