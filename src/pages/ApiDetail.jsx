@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ApiDetail.css";
 
 export default function ApiDetail() {
-    const { id } = useParams();
+    const { id, query } = useParams();
     const navigate = useNavigate();
 
     const [apiData, setApiData] = useState(null);
@@ -12,15 +12,17 @@ export default function ApiDetail() {
 
     useEffect(() => {
     // Load main API + recommended APIs
-    fetch(`http://127.0.0.1:5000/api/hybrid?query=${encodeURIComponent(id)}`)
+    fetch(`http://127.0.0.1:5000/api/hybrid?query=${encodeURIComponent(query)}`)
       .then((res) => {
-        if (!res.ok) return null;
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data) => {
+        console.log("search results:", data);
         if (data && data.results) {
-          const mainAPI = data.results.find((item) => String(item.id) === id);
-          setApiData(mainAPI || null);
+            const mainAPI = data.results.find((item) => String(item.id) === id);
+            console.log("found api:", mainAPI)
+            setApiData(mainAPI || null);
         }
       })
       .catch(() => {
