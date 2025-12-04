@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+
 import "./Search.css";
 
 export default function Search() {
@@ -11,6 +12,10 @@ export default function Search() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [authFilter, setAuthFilter] = useState("All");
+  const [sortOption, setSortOption] = useState("Relevance");
+
 
   function fetchResults(q) {
     setLoading(true);
@@ -38,11 +43,40 @@ export default function Search() {
         setLoading(false);
       });
   }
+  
 
   useEffect(() => {
     if (query) fetchResults(query);
   }, [query]);
 
+  const filteredResults = results
+  .filter((api) => {
+    // Category filter
+    if (categoryFilter !== "All" && api.category !== categoryFilter)
+      return false;
+
+    // Auth filter
+    if (authFilter !== "All") {
+      const apiAuth = (api.auth_type || "").toLowerCase();
+
+      if (authFilter === "No Auth" && apiAuth !== "no") return false;
+      if (authFilter === "API Key" && apiAuth !== "apikey") return false;
+      if (authFilter === "OAuth" && apiAuth !== "oauth") return false;
+    }
+
+    return true;
+  });
+
+  // Sorting
+  if (sortOption === "Relevance") {
+    filteredResults.sort((a, b) => b.hybrid_score - a.hybrid_score);
+  }
+  // Optional sorting placeholders:
+  else if (sortOption === "Popularity") {
+    filteredResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+  } else if (sortOption === "Ease of Use") {
+    filteredResults.sort((a, b) => (b.ease || 0) - (a.ease || 0));
+  }
   return (
     <div className="search-page">
 
@@ -52,32 +86,31 @@ export default function Search() {
 
         <div className="filter-group">
           <label className="filter-label">Category</label>
-          <select className="filter-select">
-            <option>All</option>
-            <option>Weather</option>
-            <option>Finance</option>
-            <option>AI</option>
-            <option>Maps</option>
-          </select>
+          <select
+              className="filter-select"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option>All</option>
+              <option>Weather</option>
+              <option>Finance</option>
+              <option>AI</option>
+              <option>Maps</option>
+            </select>
         </div>
 
         <div className="filter-group">
           <label className="filter-label">Authentication</label>
-          <select className="filter-select">
-            <option>All</option>
-            <option>No Auth</option>
-            <option>API Key</option>
-            <option>OAuth</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label className="filter-label">Sort by</label>
-          <select className="filter-select">
-            <option>Relevance</option>
-            <option>Popularity</option>
-            <option>Ease of Use</option>
-          </select>
+          <select
+              className="filter-select"
+              value={authFilter}
+              onChange={(e) => setAuthFilter(e.target.value)}
+            >
+              <option>All</option>
+              <option>No Auth</option>
+              <option>API Key</option>
+              <option>OAuth</option>
+            </select>
         </div>
       </aside>
 
@@ -105,9 +138,9 @@ export default function Search() {
         )}
 
         <div className="result-list">
-          {results.map((api, index) => {
+          {filteredResults.map((api, index) => {
             const similarity = api.hybrid_score ?? 0;
-
+            
             return (
               <div
                 className="result-card"
